@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace CalculatorLibrary;
 
@@ -7,7 +9,20 @@ using Newtonsoft.Json;
 
 public class Calculator
 {
-    private readonly List<Operation> _operations = []; 
+    private const string TotalOperationsPerformedJsonTokenName = "TotalOperationsPerformed";
+    private const string OperationsJsonTokenName = "Operations";
+    private const string LogFileName = "calculatorlog.json";
+
+    private List<Operation> _operations = [];
+    
+    private int _totalOperationsPerformed;
+    
+    public Calculator()
+    {
+        JObject json = LoadJObjectSafe(LogFileName);
+        LoadTotalOperationsPerformedFromJson(json);
+        LoadOperationHistoryFromJson(json);
+    }
     
     public double DoOperation(double num1, double num2, string op)
     {
@@ -31,6 +46,8 @@ public class Calculator
                 }
                 break;
         }
+
+        _totalOperationsPerformed++;
         
         _operations.Add(new Operation
         {
@@ -53,11 +70,52 @@ public class Calculator
             "d" => OperationType.Division
         };
     }
+
+    private void LoadOperationHistoryFromJson(JObject json)
+    {
+        JArray operations = json.GetValue(OperationsJsonTokenName) as JArray ?? [];
+        _operations = operations.ToObject<List<Operation>>() ?? [];
+    }
+    
+    private void LoadTotalOperationsPerformedFromJson(JObject json)
+    {
+        string count = json.GetValue(TotalOperationsPerformedJsonTokenName)?.ToString() ?? "0";
+        _totalOperationsPerformed = int.TryParse(count, out int n) ? n : 0;
+    }
+    
+    private JObject LoadJObjectSafe(string path)
+    {
+        if (!File.Exists(path)) return new JObject();
+        
+        string text = File.ReadAllText(LogFileName);
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return new JObject();
+        }
+
+        try
+        {
+            using StreamReader file = File.OpenText(LogFileName);
+            using JsonTextReader reader = new JsonTextReader(file);
+
+            JToken token = JToken.ReadFrom(reader);
+            return token as JObject ?? new JObject();
+        }
+        catch (Exception ex)
+        {
+            if (ex is JsonReaderException or IOException)
+            {
+                return new JObject();
+            }
+
+            throw;
+        }
+    }
     
     public void SaveOperationHistoryToFile()
     {
-        using StreamWriter file = File.CreateText("calculatorlog.json");
-        using JsonTextWriter writer = new JsonTextWriter(file)
+        using StreamWriter _logFile = File.CreateText(LogFileName);
+        using JsonTextWriter writer = new JsonTextWriter(_logFile)
         {
             Formatting = Formatting.Indented
         };
@@ -68,7 +126,9 @@ public class Calculator
         };
 
         writer.WriteStartObject();
-        writer.WritePropertyName("Operations");
+        writer.WritePropertyName(TotalOperationsPerformedJsonTokenName);
+        writer.WriteValue(_totalOperationsPerformed);
+        writer.WritePropertyName(OperationsJsonTokenName);
         serializer.Serialize(writer, _operations);
         writer.WriteEndObject();
     }
