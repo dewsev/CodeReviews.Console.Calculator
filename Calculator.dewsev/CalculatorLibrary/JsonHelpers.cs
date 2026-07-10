@@ -8,15 +8,15 @@ internal static class JsonHelpers
 {
     public static void SaveToJsonFile(object obj, string fileName)
     {
-        string historyJson = JsonConvert.SerializeObject(obj);
+        string json = JsonConvert.SerializeObject(obj);
 
         using StreamWriter file = File.CreateText(fileName);
         using JsonTextWriter writer = new JsonTextWriter(file);
         
-        writer.WriteRaw(historyJson);
+        writer.WriteRaw(json);
     }
     
-    public static T ReadFromJsonFile<T>(string fileName) where T: new()
+    public static T ReadFromJsonFile<T>(string fileName) where T : new()
     {
         if (!File.Exists(fileName))
         {
@@ -25,8 +25,8 @@ internal static class JsonHelpers
 
         try
         {
-            string historyJsonString = File.ReadAllText(fileName);
-            return JsonConvert.DeserializeObject<T>(historyJsonString) ?? new T();
+            string jsonString = File.ReadAllText(fileName);
+            return JsonConvert.DeserializeObject<T>(jsonString) ?? new T();
         }
         catch (Exception ex)
         {
