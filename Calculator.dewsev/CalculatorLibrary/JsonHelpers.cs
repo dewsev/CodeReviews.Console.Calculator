@@ -12,7 +12,6 @@ internal static class JsonHelpers
 
         using StreamWriter file = File.CreateText(fileName);
         using JsonTextWriter writer = new JsonTextWriter(file);
-        writer.Formatting = Formatting.Indented;
         
         writer.WriteRaw(historyJson);
     }
