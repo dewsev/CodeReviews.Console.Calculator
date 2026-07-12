@@ -5,58 +5,99 @@ using CalculatorLibrary;
 
 internal class Program
 {
+    private static readonly Calculator Calculator = new Calculator();
+    
+    
     private static void Main(string[] args)
     {
-        bool endApp = false;
-        Console.WriteLine("Console Calculator in C#\r");
-        Console.WriteLine("------------------------\n");
-
-        Calculator calculator = new Calculator();
-        while (!endApp)
+        
+        while (true)
         {
-            OperationType operationType;
-            while (true)
-            {
-                if (TryGetOperationTypeFromUserChoice(out operationType))
-                {
-                    break;
-                }
-                
-                Console.WriteLine("Please provide a valid option.");
-            }
-            
-            double firstOperand = GetNumberFromUser("Enter first operand: ");
-            double secondOperand = GetNumberFromUser("Enter second operand: ");
-           
-            try
-            {
-                double result = calculator.DoOperation(firstOperand, secondOperand, operationType);
-                if (double.IsNaN(result))
-                {
-                    Console.WriteLine("This operation will result in a mathematical error.\n");
-                }
-                else
-                {
-                    Console.WriteLine("Your result: {0:0.##}\n", result);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
-            }
-
-            Console.WriteLine("------------------------\n");
-
-            Console.Write("Press 'n' and Enter to close the app, or press any other key and Enter to continue: ");
-            if (Console.ReadLine() == "n")
-            {
-                endApp = true;
-            }
-
-            Console.WriteLine("\n");
+            MainMenu();
         }
     }
 
+    private static void CalculatorMenu()
+    {
+        Console.Clear();
+        
+        OperationType operationType;
+        while (true)
+        {
+            if (TryGetOperationTypeFromUserChoice(out operationType))
+            {
+                Console.Clear();
+                break;
+            }
+                
+            Console.WriteLine("Please provide a valid option.");
+        }
+            
+        double firstOperand = GetNumberFromUser("Enter first operand: ");
+        double secondOperand = GetNumberFromUser("Enter second operand: ");
+           
+        try
+        {
+            double result = Calculator.DoOperation(firstOperand, secondOperand, operationType);
+            if (double.IsNaN(result))
+            {
+                Console.WriteLine("This operation will result in a mathematical error.\n");
+            }
+            else
+            {
+                Console.WriteLine($"Your result: {result:N2}");
+                
+                Console.WriteLine("\n1.New calculation");
+                // Console.WriteLine("2.History");
+                Console.WriteLine("3.Main Menu");
+                Console.WriteLine("4.Exit");
+                Console.Write("\nYour choice: ");
+        
+                string? choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        CalculatorMenu();
+                        break;
+                    case "3":
+                        MainMenu();
+                        break;
+                    case "4":
+                        Environment.Exit(0);
+                        break;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
+        }
+    }
+    
+    private static void MainMenu()
+    {
+        Console.Clear();
+        Console.WriteLine("Console Calculator in C#");
+        Console.WriteLine("------------------------");
+        Console.WriteLine("\n1.Calculator");
+        // Console.WriteLine("2.History");
+        Console.WriteLine("3.Exit");
+        Console.Write("\nYour choice: ");
+        
+        string? choice = Console.ReadLine();
+
+        switch (choice)
+        {
+            case "1":
+                CalculatorMenu();
+                break;
+            case "3":
+                Environment.Exit(0);
+                break;
+        }
+    }
+    
     private static double GetNumberFromUser(string prompt)
     {
         Console.Write(prompt);
@@ -76,13 +117,12 @@ internal class Program
     {
         operationType = default;
         
-        Console.Clear();
-        Console.WriteLine("Choose an operator from the following list:");
-        Console.WriteLine("\t1.Add");
-        Console.WriteLine("\t2.Subtract");
-        Console.WriteLine("\t3.Multiply");
-        Console.WriteLine("\t4.Divide");
-        Console.Write("Your choice: ");
+        Console.WriteLine("Choose an operation:");
+        Console.WriteLine("\n1.Add");
+        Console.WriteLine("2.Subtract");
+        Console.WriteLine("3.Multiply");
+        Console.WriteLine("4.Divide");
+        Console.Write("\nYour choice: ");
 
         string? choice = Console.ReadLine();
 
