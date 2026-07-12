@@ -1,81 +1,99 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿namespace Calculator.dewsev;
 
-namespace Calculator.dewsev;
+using System;
+using CalculatorLibrary;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        var endApp = false;
-        // Display title as the C# console calculator app.
+        bool endApp = false;
         Console.WriteLine("Console Calculator in C#\r");
         Console.WriteLine("------------------------\n");
 
-        var calculator = new CalculatorLibrary.Calculator();
+        Calculator calculator = new Calculator();
         while (!endApp)
         {
-            // Declare variables and set to empty.
-            // Use Nullable types (with ?) to match type of System.Console.ReadLine
-            var numInput1 = "";
-            var numInput2 = "";
-            double result = 0;
-
-            // Ask the user to type the first number.
-            Console.Write("Type a number, and then press Enter: ");
-            numInput1 = Console.ReadLine();
-
-            double cleanNum1 = 0;
-            while (!double.TryParse(numInput1, out cleanNum1))
+            OperationType operationType;
+            while (true)
             {
-                Console.Write("This is not valid input. Please enter a numeric value: ");
-                numInput1 = Console.ReadLine();
+                if (TryGetOperationTypeFromUserChoice(out operationType))
+                {
+                    break;
+                }
+                
+                Console.WriteLine("Please provide a valid option.");
             }
-
-            // Ask the user to type the second number.
-            Console.Write("Type another number, and then press Enter: ");
-            numInput2 = Console.ReadLine();
-
-            double cleanNum2 = 0;
-            while (!double.TryParse(numInput2, out cleanNum2))
+            
+            double firstOperand = GetNumberFromUser("Enter first operand: ");
+            double secondOperand = GetNumberFromUser("Enter second operand: ");
+           
+            try
             {
-                Console.Write("This is not valid input. Please enter a numeric value: ");
-                numInput2 = Console.ReadLine();
+                double result = calculator.DoOperation(firstOperand, secondOperand, operationType);
+                if (double.IsNaN(result))
+                {
+                    Console.WriteLine("This operation will result in a mathematical error.\n");
+                }
+                else
+                {
+                    Console.WriteLine("Your result: {0:0.##}\n", result);
+                }
             }
-
-            // Ask the user to choose an operator.
-            Console.WriteLine("Choose an operator from the following list:");
-            Console.WriteLine("\ta - Add");
-            Console.WriteLine("\ts - Subtract");
-            Console.WriteLine("\tm - Multiply");
-            Console.WriteLine("\td - Divide");
-            Console.Write("Your option? ");
-
-            string? op = Console.ReadLine();
-
-            // Validate input is not null, and matches the pattern
-            if (op == null || !Regex.IsMatch(op, "^(a|s|m|d)$"))
-                Console.WriteLine("Error: Unrecognized input.");
-            else
-                try
-                {
-                    result = calculator.DoOperation(cleanNum1, cleanNum2, op);
-                    if (double.IsNaN(result))
-                        Console.WriteLine("This operation will result in a mathematical error.\n");
-                    else Console.WriteLine("Your result: {0:0.##}\n", result);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
-                }
+            catch (Exception e)
+            {
+                Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
+            }
 
             Console.WriteLine("------------------------\n");
 
-            // Wait for the user to respond before closing.
             Console.Write("Press 'n' and Enter to close the app, or press any other key and Enter to continue: ");
-            if (Console.ReadLine() == "n") endApp = true;
+            if (Console.ReadLine() == "n")
+            {
+                endApp = true;
+            }
 
-            Console.WriteLine("\n"); // Friendly linespacing.
+            Console.WriteLine("\n");
         }
+    }
+
+    private static double GetNumberFromUser(string prompt)
+    {
+        Console.Write(prompt);
+        string? numInput1 = Console.ReadLine();
+
+        double cleanNum1;
+        while (!double.TryParse(numInput1, out cleanNum1))
+        {
+            Console.Write("This is not valid input. Please enter a numeric value: ");
+            numInput1 = Console.ReadLine();
+        }
+
+        return cleanNum1;
+    }
+
+    private static bool TryGetOperationTypeFromUserChoice(out OperationType operationType)
+    {
+        operationType = default;
+        
+        Console.Clear();
+        Console.WriteLine("Choose an operator from the following list:");
+        Console.WriteLine("\t1.Add");
+        Console.WriteLine("\t2.Subtract");
+        Console.WriteLine("\t3.Multiply");
+        Console.WriteLine("\t4.Divide");
+        Console.Write("Your choice: ");
+
+        string? choice = Console.ReadLine();
+
+         switch (choice)
+        {
+            case "1": operationType = OperationType.Addition; return true;
+            case "2": operationType = OperationType.Subtraction; return true;
+            case "3": operationType = OperationType.Multiplication; return true;
+            case "4": operationType = OperationType.Division; return true;
+        }
+
+        return false;
     }
 }

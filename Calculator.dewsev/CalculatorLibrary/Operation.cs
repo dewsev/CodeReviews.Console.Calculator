@@ -11,11 +11,3 @@ internal class Operation
     public OperationType OperationType { get; init; }
     public double Result { get; init; }
 }
-
-internal enum OperationType
-{
-    Addition,
-    Subtraction,
-    Multiplication,
-    Division
-}
