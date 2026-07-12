@@ -3,7 +3,7 @@ using Newtonsoft.Json.Converters;
 
 namespace CalculatorLibrary;
 
-internal class Operation
+public class Operation
 {
     public double Operand1 { get; init; }
     public double Operand2 { get; init; }

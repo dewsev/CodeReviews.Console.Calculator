@@ -1,4 +1,6 @@
-﻿namespace Calculator.dewsev;
+﻿using System.Collections.Generic;
+
+namespace Calculator.dewsev;
 
 using System;
 using CalculatorLibrary;
@@ -10,11 +12,7 @@ internal class Program
     
     private static void Main(string[] args)
     {
-        
-        while (true)
-        {
-            MainMenu();
-        }
+        MainMenu();
     }
 
     private static void CalculatorMenu()
@@ -48,7 +46,7 @@ internal class Program
                 Console.WriteLine($"Your result: {result:N2}");
                 
                 Console.WriteLine("\n1.New calculation");
-                // Console.WriteLine("2.History");
+                Console.WriteLine("2.History");
                 Console.WriteLine("3.Main Menu");
                 Console.WriteLine("4.Exit");
                 Console.Write("\nYour choice: ");
@@ -59,6 +57,9 @@ internal class Program
                 {
                     case "1":
                         CalculatorMenu();
+                        break;
+                    case "2":
+                        HistoryMenu();
                         break;
                     case "3":
                         MainMenu();
@@ -74,6 +75,69 @@ internal class Program
             Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
         }
     }
+
+    private static void HistoryMenu()
+    {
+        Console.Clear();
+        
+        List<Operation> history = Calculator.GetOperationHistory();
+
+        if (history.Count == 0)
+        {
+            Console.WriteLine("You have not performed any calcualtions yet.");
+            Console.WriteLine("Press any key to go to main menu.");
+            Console.ReadKey();
+            MainMenu();
+        }
+        else
+        {
+            Console.WriteLine("Lastest calculations:\n");
+            for (int i = 0; i < history.Count; i++)
+            {
+                Operation operation = history[i];
+                char op;
+                try
+                {
+                    op = operation.OperationType switch
+                    {
+                        OperationType.Addition => '+',
+                        OperationType.Subtraction => '-',
+                        OperationType.Multiplication => '*',
+                        OperationType.Division => '/',
+                        _ => throw new InvalidOperationException("Invalid operation.")
+                    };
+                }
+                catch (InvalidOperationException)
+                {
+                    continue;
+                }
+            
+                Console.WriteLine($"{i + 1}. {operation.Operand1} {op} {operation.Operand2} = {operation.Result}");
+            }
+            
+            Console.WriteLine("Enter calculation number or 'm' to go to Main Menu.");
+            while (true)
+            {
+                string? input = Console.ReadLine();
+
+                if (input == "m")
+                {
+                    MainMenu();
+                }
+                else
+                {
+                    bool validChoice = int.TryParse(input, out int choice) && choice > 0 && choice <= history.Count;
+                    if (validChoice)
+                    {
+                        // Proceed to CalculatorMenu with the operation's result as the first operand
+                        double chosenResult = history[choice - 1].Result;
+                        CalculatorMenu();
+                    }
+                    Console.WriteLine("Invalid input. Please try again.");    
+                }
+            }
+        }
+    }
     
     private static void MainMenu()
     {
@@ -81,7 +145,7 @@ internal class Program
         Console.WriteLine("Console Calculator in C#");
         Console.WriteLine("------------------------");
         Console.WriteLine("\n1.Calculator");
-        // Console.WriteLine("2.History");
+        Console.WriteLine("2.History");
         Console.WriteLine("3.Exit");
         Console.Write("\nYour choice: ");
         
@@ -91,6 +155,9 @@ internal class Program
         {
             case "1":
                 CalculatorMenu();
+                break;
+            case "2":
+                HistoryMenu();
                 break;
             case "3":
                 Environment.Exit(0);

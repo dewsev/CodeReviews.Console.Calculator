@@ -1,10 +1,17 @@
-﻿namespace CalculatorLibrary;
+﻿using System.Collections.Generic;
+
+namespace CalculatorLibrary;
 
 public class Calculator
 {
     private const string HistoryFileName = "history.json";
     private readonly History _history = JsonHelpers.ReadFromJsonFile<History>(HistoryFileName);
 
+    public List<Operation> GetOperationHistory()
+    {
+        return _history.LatestOperations;
+    }
+    
     public double DoOperation(double num1, double num2, OperationType operationType)
     {
         double result = operationType switch
