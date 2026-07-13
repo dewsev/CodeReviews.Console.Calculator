@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CalculatorLibrary;
 
@@ -12,25 +13,33 @@ public class Calculator
         return _history.LatestOperations;
     }
     
-    public double DoOperation(double num1, double num2, OperationType operationType)
+    public Operation DoOperation(double operand1, double operand2, OperationType operationType)
     {
         double result = operationType switch
         {
-            OperationType.Addition => num1 + num2,
-            OperationType.Subtraction => num1 - num2,
-            OperationType.Multiplication => num1 * num2,
-            OperationType.Division => num1 / num2,
+            OperationType.Addition => operand1 + operand2,
+            OperationType.Subtraction => operand1 - operand2,
+            OperationType.Multiplication => operand1 * operand2,
+            OperationType.Division => operand2 == 0 ? double.NaN : operand1 / operand2,
+            _ => double.NaN
         };
 
-        UpdateHistory(new Operation
+        if (double.IsNaN(result))
         {
-            Operand1 = num1,
-            Operand2 = num2,
+            throw new InvalidOperationException("This operation will result in a mathematical error.");
+        }
+        
+        Operation operation = new Operation
+        {
+            Operand1 = operand1,
+            Operand2 = operand2,
             OperationType = operationType,
             Result = result
-        });
+        };
+        
+        UpdateHistory(operation);
 
-        return result;
+        return operation;
     }
 
     private void UpdateHistory(Operation operation)
