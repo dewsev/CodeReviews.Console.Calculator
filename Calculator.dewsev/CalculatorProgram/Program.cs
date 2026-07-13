@@ -19,7 +19,7 @@ internal class Program
     {
         Console.Clear();
         
-        OperationType operationType = GetOperationTypeFromUserChoice();
+        OperationType operationType = GetOperationTypeFromUser();
         double operand1 = operand ?? GetNumberFromUser("Enter first operand: ");
         double operand2 = GetNumberFromUser("Enter second operand: ");
 
@@ -206,7 +206,7 @@ internal class Program
         return cleanNum1;
     }
 
-    private static OperationType GetOperationTypeFromUserChoice()
+    private static OperationType GetOperationTypeFromUser()
     {
         Console.WriteLine("Choose an operation:");
         Console.WriteLine("\n1.Add");
