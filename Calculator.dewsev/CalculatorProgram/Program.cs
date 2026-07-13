@@ -15,7 +15,7 @@ internal class Program
         MainMenu();
     }
 
-    private static void CalculatorMenu()
+    private static void CalculatorMenu(double? operand = null)
     {
         Console.Clear();
         
@@ -31,7 +31,7 @@ internal class Program
             Console.WriteLine("Please provide a valid option.");
         }
             
-        double firstOperand = GetNumberFromUser("Enter first operand: ");
+        double firstOperand = operand ?? GetNumberFromUser("Enter first operand: ");
         double secondOperand = GetNumberFromUser("Enter second operand: ");
            
         try
@@ -43,7 +43,9 @@ internal class Program
             }
             else
             {
+                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine($"Your result: {result:N2}");
+                Console.ResetColor();
                 
                 Console.WriteLine("\n1.New calculation");
                 Console.WriteLine("2.History");
@@ -129,9 +131,8 @@ internal class Program
                     bool validChoice = int.TryParse(input, out int choice) && choice > 0 && choice <= history.Count;
                     if (validChoice)
                     {
-                        // Proceed to CalculatorMenu with the operation's result as the first operand
                         double chosenResult = history[choice - 1].Result;
-                        CalculatorMenu();
+                        CalculatorMenu(chosenResult);
                     }
                     Console.WriteLine("Invalid input. Please try again.");    
                 }
@@ -193,14 +194,22 @@ internal class Program
 
         string? choice = Console.ReadLine();
 
-         switch (choice)
+        switch (choice)
         {
-            case "1": operationType = OperationType.Addition; return true;
-            case "2": operationType = OperationType.Subtraction; return true;
-            case "3": operationType = OperationType.Multiplication; return true;
-            case "4": operationType = OperationType.Division; return true;
+            case "1": 
+                operationType = OperationType.Addition;
+                return true;
+            case "2": 
+                operationType = OperationType.Subtraction;
+                return true;
+            case "3":
+                operationType = OperationType.Multiplication;
+                return true;
+            case "4": 
+                operationType = OperationType.Division;
+                return true;
+            default:
+                return false;
         }
-
-        return false;
     }
 }
