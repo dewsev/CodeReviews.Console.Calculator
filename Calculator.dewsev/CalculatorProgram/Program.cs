@@ -84,7 +84,7 @@ internal class Program
 
         if (history.Count == 0)
         {
-            Console.WriteLine("You have not performed any calcualtions yet.");
+            Console.WriteLine("You have not performed any calculations yet.");
             Console.WriteLine("Press any key to go to main menu.");
             Console.ReadKey();
             MainMenu();
