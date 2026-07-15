@@ -5,7 +5,8 @@ using System.Collections.Generic;
 
 public class Calculator
 {
-    private readonly History _history = JsonHelpers.ReadFromJsonFile<History>("history.json");
+    private const string HistorySaveFileName = "history.json";
+    private readonly History _history = JsonHelpers.ReadFromJsonFile<History>(HistorySaveFileName);
 
     public List<Operation> GetOperationHistory()
     {
@@ -38,7 +39,7 @@ public class Calculator
         };
 
         _history.Update(operation);
-        _history.SaveToJson();
+        JsonHelpers.SaveToJsonFile(_history, HistorySaveFileName);
 
         return operation;
     }

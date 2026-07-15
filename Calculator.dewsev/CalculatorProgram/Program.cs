@@ -4,7 +4,7 @@ using System;
 using CalculatorLibrary;
 using System.Collections.Generic;
 
-internal class Program
+internal static class Program
 {
     private static readonly Calculator Calculator = new Calculator();
     
