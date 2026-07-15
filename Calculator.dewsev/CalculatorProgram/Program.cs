@@ -118,13 +118,18 @@ internal static class Program
             DisplayCalculationHistory(history);
             
             Console.WriteLine("\nProvide corresponding index or press ENTER to go back to main menu.");
+            Console.WriteLine("Input 'c' and press ENTER to clear the history data.");
             while (true)
             {
-                string? input = Console.ReadLine();
+                string? input = Console.ReadLine()?.ToLower().Trim();
 
                 if (string.IsNullOrEmpty(input))
                 {
                     MainMenu();
+                }
+                else if (input == "c")
+                {
+                    ClearHistory();
                 }
                 else
                 {
@@ -140,6 +145,14 @@ internal static class Program
         }
     }
 
+    private static void ClearHistory()
+    {
+        Calculator.ClearHistory();
+        Console.Clear();
+        Console.WriteLine("History cleared.");
+        Console.WriteLine("Press ENTER to go back to main menu.");
+    }
+    
     private static void DisplayCalculationHistory(List<Operation> history)
     {
         Console.WriteLine("Lastest calculations:\n");

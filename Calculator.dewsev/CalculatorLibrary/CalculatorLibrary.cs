@@ -42,4 +42,10 @@ public class Calculator
 
         return operation;
     }
+
+    public void ClearHistory()
+    {
+        _history.Clear();
+        JsonHelpers.SaveToJsonFile(_history, HistorySaveFileName);
+    }
 }

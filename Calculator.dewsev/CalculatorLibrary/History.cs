@@ -11,16 +11,18 @@ internal class History
     internal void Update(Operation operation)
     {
         TotalOperationsPerformed++;
-        AddOperation(operation);
-    }
-
-    private void AddOperation(Operation operation)
-    {
+        
         LatestOperations.Insert(0, operation);
         
         if (LatestOperations.Count > HistorySize)
         {
             LatestOperations.RemoveAt(HistorySize);
         }
+    }
+
+    public void Clear()
+    {
+        TotalOperationsPerformed = 0;
+        LatestOperations.Clear();
     }
 }
