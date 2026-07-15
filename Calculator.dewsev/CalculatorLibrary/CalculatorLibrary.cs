@@ -12,6 +12,11 @@ public class Calculator
     {
         return _history.LatestOperations;
     }
+    
+    public int GetTotalOperationsPerformed()
+    {
+        return _history.TotalOperationsPerformed;
+    }
 
     public Operation DoOperation(double operand1, double operand2, OperationType operationType)
     {

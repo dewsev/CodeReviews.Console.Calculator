@@ -104,9 +104,9 @@ internal static class Program
     {
         Console.Clear();
         
-        List<Operation> history = Calculator.GetOperationHistory();
+        List<Operation> operations = Calculator.GetOperationHistory();
 
-        if (history.Count == 0)
+        if (operations.Count == 0)
         {
             Console.WriteLine("You have not performed any calculations yet.");
             Console.WriteLine("Press any key to go to main menu.");
@@ -115,9 +115,10 @@ internal static class Program
         }
         else
         {
-            DisplayCalculationHistory(history);
+            DisplayTotalOperationsPerformed();
+            DisplayOperationList(operations);
             
-            Console.WriteLine("\nProvide corresponding index or press ENTER to go back to main menu.");
+            Console.WriteLine("Provide corresponding index or press ENTER to go back to main menu.");
             Console.WriteLine("Input 'c' and press ENTER to clear the history data.");
             while (true)
             {
@@ -133,10 +134,10 @@ internal static class Program
                 }
                 else
                 {
-                    bool validChoice = int.TryParse(input, out int choice) && choice > 0 && choice <= history.Count;
+                    bool validChoice = int.TryParse(input, out int choice) && choice > 0 && choice <= operations.Count;
                     if (validChoice)
                     {
-                        double chosenResult = history[choice - 1].Result;
+                        double chosenResult = operations[choice - 1].Result;
                         CalculatorMenu(chosenResult);
                     }
                     WriteColored("Invalid input. Please try again.\n", ConsoleColor.Red);    
@@ -152,10 +153,18 @@ internal static class Program
         Console.WriteLine("History cleared.");
         Console.WriteLine("Press ENTER to go back to main menu.");
     }
-    
-    private static void DisplayCalculationHistory(List<Operation> history)
+
+    private static void DisplayTotalOperationsPerformed()
     {
-        Console.WriteLine("Lastest calculations:\n");
+        int totalOperationsPerformed = Calculator.GetTotalOperationsPerformed();
+        Console.WriteLine("--------------------------------------------------\n");
+        WriteColored($"Total operations performed: {totalOperationsPerformed}\n\n", ConsoleColor.Cyan);
+        Console.WriteLine("--------------------------------------------------\n");
+    }
+    
+    private static void DisplayOperationList(List<Operation> history)
+    {
+        WriteColored("Lastest calculations:\n\n", ConsoleColor.Cyan);
         for (int i = 0; i < history.Count; i++)
         {
             Operation operation = history[i];
@@ -173,6 +182,7 @@ internal static class Program
             WriteColored($"{i + 1}. ", ConsoleColor.Cyan);
             Console.Write($"{operation.Operand1} {op} {operation.Operand2} = {operation.Result}\n");
         }
+        Console.WriteLine("\n--------------------------------------------------\n");
     }
     
     private static void MainMenu()
