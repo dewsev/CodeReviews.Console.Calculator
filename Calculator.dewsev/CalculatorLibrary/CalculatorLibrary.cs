@@ -31,7 +31,6 @@ public class Calculator
 
         Operation operation = new Operation
         {
-            CreatedAt = DateTime.Now,
             Operand1 = operand1,
             Operand2 = operand2,
             OperationType = operationType,

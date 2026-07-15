@@ -1,6 +1,5 @@
 namespace CalculatorLibrary;
 
-using System;
 using System.Collections.Generic;
 
 internal class History
@@ -17,15 +16,11 @@ internal class History
 
     private void AddOperation(Operation operation)
     {
-        if (LatestOperations.Count < HistorySize)
-        {
-            LatestOperations.Add(operation);
-        }
-        else
-        {
-            LatestOperations[HistorySize - 1] = operation;        
-        }
+        LatestOperations.Insert(0, operation);
         
-        LatestOperations.Sort((a, b) => DateTime.Compare(b.CreatedAt, a.CreatedAt));
+        if (LatestOperations.Count > HistorySize)
+        {
+            LatestOperations.RemoveAt(HistorySize);
+        }
     }
 }
