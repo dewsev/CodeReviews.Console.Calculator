@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace Calculator.dewsev;
+﻿namespace Calculator.dewsev;
 
 using System;
 using CalculatorLibrary;
+using System.Collections.Generic;
 
 internal class Program
 {
     private static readonly Calculator Calculator = new Calculator();
-    
     
     private static void Main(string[] args)
     {

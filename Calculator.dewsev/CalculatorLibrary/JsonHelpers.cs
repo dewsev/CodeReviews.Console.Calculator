@@ -1,8 +1,8 @@
+namespace CalculatorLibrary;
+
 using System;
 using System.IO;
 using Newtonsoft.Json;
-
-namespace CalculatorLibrary;
 
 internal static class JsonHelpers
 {

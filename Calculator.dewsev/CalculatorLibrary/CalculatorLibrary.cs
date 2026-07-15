@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace CalculatorLibrary;
 
-namespace CalculatorLibrary;
+using System;
+using System.Collections.Generic;
 
 public class Calculator
 {
-    private const string HistoryFileName = "history.json";
-    private readonly History _history = JsonHelpers.ReadFromJsonFile<History>(HistoryFileName);
+    private readonly History _history = JsonHelpers.ReadFromJsonFile<History>("history.json");
 
     public List<Operation> GetOperationHistory()
     {
         return _history.LatestOperations;
     }
-    
+
     public Operation DoOperation(double operand1, double operand2, OperationType operationType)
     {
         double result = operationType switch
@@ -28,25 +27,19 @@ public class Calculator
         {
             throw new InvalidOperationException("This operation will result in a mathematical error.");
         }
-        
+
         Operation operation = new Operation
         {
+            CreatedAt = DateTime.Now,
             Operand1 = operand1,
             Operand2 = operand2,
             OperationType = operationType,
             Result = result
         };
-        
-        UpdateHistory(operation);
+
+        _history.Update(operation);
+        _history.SaveToJson();
 
         return operation;
-    }
-
-    private void UpdateHistory(Operation operation)
-    {
-        _history.TotalOperationsPerformed++;
-        _history.LatestOperations.Add(operation);
-
-        JsonHelpers.SaveToJsonFile(_history, HistoryFileName);
     }
 }
