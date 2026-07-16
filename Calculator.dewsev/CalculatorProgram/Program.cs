@@ -16,9 +16,12 @@ internal static class Program
     private static void CalculatorMenu(double? operand = null)
     {
         Console.Clear();
-        
         OperationType operationType = GetOperationTypeFromUser();
+        
+        Console.Clear();
         double operand1 = operand ?? GetNumberFromUser("Enter first operand: ");
+        
+        Console.Clear();
         double operand2 = GetNumberFromUser("Enter second operand: ");
 
         try
@@ -53,23 +56,22 @@ internal static class Program
         Console.WriteLine("\n1.New calculation");
         Console.WriteLine("2.History");
         Console.WriteLine("3.Main Menu");
-        Console.WriteLine("4.Exit");
-        Console.Write("\nYour choice: ");
+        Console.WriteLine("4.Exit\n");
 
-        string? choice = Console.ReadLine();
-
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, 4);
+            
         switch (choice)
         {
-            case "1":
+            case 1:
                 CalculatorMenu();
                 break;
-            case "2":
+            case 2:
                 HistoryMenu();
                 break;
-            case "3":
+            case 3:
                 MainMenu();
                 break;
-            case "4":
+            case 4:
                 Environment.Exit(0);
                 break;
         }
@@ -108,8 +110,8 @@ internal static class Program
 
         if (operations.Count == 0)
         {
-            Console.WriteLine("You have not performed any calculations yet.");
-            Console.WriteLine("Press any key to go to main menu.");
+            Console.WriteLine("You have not performed any calculations yet.\n");
+            Console.WriteLine("Press any key to go to Main Menu.");
             Console.ReadKey();
             MainMenu();
         }
@@ -118,10 +120,12 @@ internal static class Program
             DisplayTotalOperationsPerformed();
             DisplayOperationList(operations);
             
-            Console.WriteLine("Provide corresponding index or press ENTER to go back to main menu.");
-            Console.WriteLine("Input 'c' and press ENTER to clear the history data.");
+            Console.WriteLine("Provide corresponding index or press ENTER to go back to Main Menu.");
+            Console.WriteLine("Input 'c' and press ENTER to clear the history data.\n");
+
             while (true)
             {
+                Console.Write("Your choice: ");
                 string? input = Console.ReadLine()?.ToLower().Trim();
 
                 if (string.IsNullOrEmpty(input))
@@ -140,7 +144,9 @@ internal static class Program
                         double chosenResult = operations[choice - 1].Result;
                         CalculatorMenu(chosenResult);
                     }
-                    WriteColored("Invalid input. Please try again.\n", ConsoleColor.Red);    
+                    
+                    ClearCurrentConsoleLine();
+                    WriteColored("Invalid input. Please try again.\n", ConsoleColor.Red);
                 }
             }
         }
@@ -150,8 +156,10 @@ internal static class Program
     {
         Calculator.ClearHistory();
         Console.Clear();
-        Console.WriteLine("History cleared.");
-        Console.WriteLine("Press ENTER to go back to main menu.");
+        WriteColored("History cleared.\n", ConsoleColor.Green);
+        Console.WriteLine("Press any key to go back to main menu.");
+        Console.ReadKey();
+        MainMenu();
     }
 
     private static void DisplayTotalOperationsPerformed()
@@ -192,39 +200,42 @@ internal static class Program
         Console.WriteLine("------------------------");
         Console.WriteLine("\n1.Calculator");
         Console.WriteLine("2.History");
-        Console.WriteLine("3.Exit");
-        Console.Write("\nYour choice: ");
-        
-        string? choice = Console.ReadLine();
+        Console.WriteLine("3.Exit\n");
 
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, 3);
+            
         switch (choice)
         {
-            case "1":
+            case 1:
                 CalculatorMenu();
                 break;
-            case "2":
+            case 2:
                 HistoryMenu();
                 break;
-            case "3":
+            case 3:
                 Environment.Exit(0);
                 break;
         }
     }
     
-    private static double GetNumberFromUser(string prompt)
+    private static double GetNumberFromUser(string? prompt, double min = double.MinValue, double max = double.MaxValue)
     {
-        Console.Clear();
-        Console.Write(prompt);
-        string? numInput1 = Console.ReadLine();
-
-        double cleanNum1;
-        while (!double.TryParse(numInput1, out cleanNum1))
+        string? input;
+        double cleanNum;
+        do
         {
-            Console.Write("This is not valid input. Please enter a numeric value: ");
-            numInput1 = Console.ReadLine();
-        }
+            if (!string.IsNullOrEmpty(prompt))
+            {
+                Console.Write(prompt);
+            }
+            
+            input = Console.ReadLine();
+            
+            ClearCurrentConsoleLine();
 
-        return cleanNum1;
+        } while (!double.TryParse(input, out cleanNum) || cleanNum < min || cleanNum > max);
+
+        return cleanNum;
     }
 
     private static OperationType GetOperationTypeFromUser()
@@ -235,25 +246,24 @@ internal static class Program
         Console.WriteLine("3.Multiply");
         Console.WriteLine("4.Divide\n");
         
-        while (true)
-        {
-            Console.Write("Your choice: ");
-            string? choice = Console.ReadLine();
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, 4);
 
-            switch (choice)
-            {
-                case "1": 
-                    return OperationType.Addition;
-                case "2": 
-                    return OperationType.Subtraction;
-                case "3":
-                    return OperationType.Multiplication;
-                case "4": 
-                    return OperationType.Division;
-                default:
-                    WriteColored("Please provide a valid option.\n", ConsoleColor.Cyan);
-                    break;
-            }
-        }
+        return choice switch
+        {
+            1 => OperationType.Addition,
+            2 => OperationType.Subtraction,
+            3 => OperationType.Multiplication,
+            4 => OperationType.Division,
+            _ => throw new ArgumentException("Invalid input provided.")
+        };
+    }
+    
+    private static void ClearCurrentConsoleLine()
+    {
+        int currentLineCursor = Console.CursorTop - 1;
+        Console.SetCursorPosition(0, currentLineCursor);
+        Console.Write(new string(' ', Console.WindowWidth)); 
+        Console.SetCursorPosition(0, currentLineCursor);
     }
 }
+
