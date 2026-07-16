@@ -43,13 +43,6 @@ internal static class Program
             WriteColored($"Oh no! An exception occurred trying to do the math.\n - Details: {ex.Message}\n", ConsoleColor.Red);
         }
     }
-
-    private static void WriteColored(string text, ConsoleColor color)
-    {
-        Console.ForegroundColor = color;
-        Console.Write(text);
-        Console.ResetColor();
-    }
     
     private static void PostCalculationMenu()
     {
@@ -77,29 +70,29 @@ internal static class Program
         }
     }
     
-    private static void DisplayOperation(Operation operation)
+    private static void MainMenu()
     {
-        try
-        {
-            WriteColored($"{operation.Operand1} {GetOperator(operation.OperationType)} {operation.Operand2} = {operation.Result}\n", ConsoleColor.Cyan);
-        }
-        catch (ArgumentException ex)
-        {
-            WriteColored($"{ex.Message}\n", ConsoleColor.Red);
-        }
-    }
+        Console.Clear();
+        Console.WriteLine("Console Calculator in C#");
+        Console.WriteLine("------------------------");
+        Console.WriteLine("\n1.Calculator");
+        Console.WriteLine("2.History");
+        Console.WriteLine("3.Exit\n");
 
-
-    private static char GetOperator(OperationType operationType)
-    {
-        return operationType switch
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, 3);
+            
+        switch (choice)
         {
-            OperationType.Addition => '+',
-            OperationType.Subtraction => '-',
-            OperationType.Multiplication => '*',
-            OperationType.Division => '/',
-            _ => throw new ArgumentException("Invalid operator.")
-        };
+            case 1:
+                CalculatorMenu();
+                break;
+            case 2:
+                HistoryMenu();
+                break;
+            case 3:
+                Environment.Exit(0);
+                break;
+        }
     }
     
     private static void HistoryMenu()
@@ -151,7 +144,7 @@ internal static class Program
             }
         }
     }
-
+    
     private static void ClearHistory()
     {
         Calculator.ClearHistory();
@@ -160,62 +153,6 @@ internal static class Program
         Console.WriteLine("Press any key to go back to main menu.");
         Console.ReadKey();
         MainMenu();
-    }
-
-    private static void DisplayTotalOperationsPerformed()
-    {
-        int totalOperationsPerformed = Calculator.GetTotalOperationsPerformed();
-        Console.WriteLine("--------------------------------------------------\n");
-        WriteColored($"Total operations performed: {totalOperationsPerformed}\n\n", ConsoleColor.Cyan);
-        Console.WriteLine("--------------------------------------------------\n");
-    }
-    
-    private static void DisplayOperationList(List<Operation> history)
-    {
-        WriteColored("Lastest calculations:\n\n", ConsoleColor.Cyan);
-        for (int i = 0; i < history.Count; i++)
-        {
-            Operation operation = history[i];
-            
-            char op;
-            try
-            {
-                op = GetOperator(operation.OperationType);
-            }
-            catch (ArgumentException)
-            {
-                continue;
-            }
-
-            WriteColored($"{i + 1}. ", ConsoleColor.Cyan);
-            Console.Write($"{operation.Operand1} {op} {operation.Operand2} = {operation.Result}\n");
-        }
-        Console.WriteLine("\n--------------------------------------------------\n");
-    }
-    
-    private static void MainMenu()
-    {
-        Console.Clear();
-        Console.WriteLine("Console Calculator in C#");
-        Console.WriteLine("------------------------");
-        Console.WriteLine("\n1.Calculator");
-        Console.WriteLine("2.History");
-        Console.WriteLine("3.Exit\n");
-
-        int choice = (int)GetNumberFromUser("Your choice: ", 1, 3);
-            
-        switch (choice)
-        {
-            case 1:
-                CalculatorMenu();
-                break;
-            case 2:
-                HistoryMenu();
-                break;
-            case 3:
-                Environment.Exit(0);
-                break;
-        }
     }
     
     private static double GetNumberFromUser(string? prompt, double min = double.MinValue, double max = double.MaxValue)
@@ -256,6 +193,68 @@ internal static class Program
             4 => OperationType.Division,
             _ => throw new ArgumentException("Invalid input provided.")
         };
+    }
+    
+    private static char GetOperator(OperationType operationType)
+    {
+        return operationType switch
+        {
+            OperationType.Addition => '+',
+            OperationType.Subtraction => '-',
+            OperationType.Multiplication => '*',
+            OperationType.Division => '/',
+            _ => throw new ArgumentException("Invalid operator.")
+        };
+    }
+    
+    private static void DisplayOperation(Operation operation)
+    {
+        try
+        {
+            WriteColored($"{operation.Operand1} {GetOperator(operation.OperationType)} {operation.Operand2} = {operation.Result}\n", ConsoleColor.Cyan);
+        }
+        catch (ArgumentException ex)
+        {
+            WriteColored($"{ex.Message}\n", ConsoleColor.Red);
+        }
+    }
+    
+    private static void DisplayTotalOperationsPerformed()
+    {
+        int totalOperationsPerformed = Calculator.GetTotalOperationsPerformed();
+        Console.WriteLine("--------------------------------------------------\n");
+        WriteColored($"Total operations performed: {totalOperationsPerformed}\n\n", ConsoleColor.Cyan);
+        Console.WriteLine("--------------------------------------------------\n");
+    }
+    
+    private static void DisplayOperationList(List<Operation> history)
+    {
+        WriteColored("Lastest calculations:\n\n", ConsoleColor.Cyan);
+        for (int i = 0; i < history.Count; i++)
+        {
+            Operation operation = history[i];
+            
+            char op;
+            try
+            {
+                op = GetOperator(operation.OperationType);
+            }
+            catch (ArgumentException)
+            {
+                continue;
+            }
+
+            WriteColored($"{i + 1}. ", ConsoleColor.Cyan);
+            Console.Write($"{operation.Operand1} {op} {operation.Operand2} = {operation.Result}\n");
+        }
+        Console.WriteLine("\n--------------------------------------------------\n");
+    }
+    
+    private static void WriteColored(string text, ConsoleColor color)
+    {
+        Console.ForegroundColor = color;
+        Console.Write(text);
+        Console.ResetColor();
     }
     
     private static void ClearCurrentConsoleLine()
