@@ -6,5 +6,6 @@ public enum OperationType
     Subtraction,
     Multiplication,
     Division,
-    Power
+    Power,
+    SquareRoot
 }

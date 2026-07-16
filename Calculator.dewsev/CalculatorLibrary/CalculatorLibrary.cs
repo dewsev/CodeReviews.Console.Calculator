@@ -18,7 +18,19 @@ public class Calculator
         return _history.TotalOperationsPerformed;
     }
 
-    public Operation DoOperation(double operand1, double operand2, OperationType operationType)
+    public Operation DoOperation(OperationType operationType, double operand)
+    {
+        double result = Math.Sqrt(operand);
+        
+        return new Operation
+        {
+            Operand1 = operand,
+            OperationType = operationType,
+            Result = result
+        };
+    }
+    
+    public Operation DoOperation(OperationType operationType, double operand1, double operand2)
     {
         double result = operationType switch
         {
@@ -27,9 +39,10 @@ public class Calculator
             OperationType.Multiplication => operand1 * operand2,
             OperationType.Division => operand2 == 0 ? double.NaN : operand1 / operand2,
             OperationType.Power => Math.Pow(operand1, operand2),
+            OperationType.SquareRoot => Math.Sqrt(operand1),
             _ => double.NaN
-        };
-
+        };   
+         
         if (double.IsNaN(result))
         {
             throw new InvalidOperationException("This operation will result in a mathematical error.");

@@ -19,15 +19,15 @@ internal static class Program
         OperationType operationType = GetOperationTypeFromUser();
         
         Console.Clear();
-
+        
         (double operand1, double operand2) = GetOperandsFromUser(operationType, operand);
 
         try
         {
-            Operation operation = Calculator.DoOperation(operand1, operand2, operationType);
-
+            Operation operation = Calculator.DoOperation(operationType, operand1, operand2);    
+            
             Console.Clear();
-            DisplayOperation(operation);
+            DisplayOperation(operation, ConsoleColor.Cyan);
             PostCalculationMenu();
         }
         catch (InvalidOperationException ex)
@@ -157,8 +157,13 @@ internal static class Program
     {
         double operand1;
         double operand2;
-        
-        if (operationType == OperationType.Power)
+
+        if (operationType == OperationType.SquareRoot)
+        {
+            operand1 = operand ?? GetNumberFromUser("Radicand: ");
+            operand2 = double.NaN;
+        }
+        else if (operationType == OperationType.Power)
         {
             Console.Clear();
             operand1 = operand ?? GetNumberFromUser("Base number: ");
@@ -205,9 +210,10 @@ internal static class Program
         Console.WriteLine("2.Subtract");
         Console.WriteLine("3.Multiply");
         Console.WriteLine("4.Divide");
-        Console.WriteLine("5.Power\n");
+        Console.WriteLine("5.Power");
+        Console.WriteLine("6.Square root\n");
         
-        int choice = (int)GetNumberFromUser("Your choice: ", 1, 5);
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, 6);
 
         return choice switch
         {
@@ -216,33 +222,42 @@ internal static class Program
             3 => OperationType.Multiplication,
             4 => OperationType.Division,
             5 => OperationType.Power,
+            6 => OperationType.SquareRoot,
             _ => throw new ArgumentException("Invalid input provided.")
         };
     }
     
-    private static char GetOperator(OperationType operationType)
+    private static string GetOperator(OperationType operationType)
     {
         return operationType switch
         {
-            OperationType.Addition => '+',
-            OperationType.Subtraction => '-',
-            OperationType.Multiplication => '*',
-            OperationType.Division => '/',
-            OperationType.Power => '^',
+            OperationType.Addition => "+",
+            OperationType.Subtraction => "-",
+            OperationType.Multiplication => "*",
+            OperationType.Division => "/",
+            OperationType.Power => "^",
+            OperationType.SquareRoot => "Square root of",
             _ => throw new ArgumentException("Invalid operator.")
         };
     }
     
-    private static void DisplayOperation(Operation operation)
+    private static void DisplayOperation(Operation operation, ConsoleColor color)
     {
         try
         {
-            WriteColored($"{operation.Operand1} {GetOperator(operation.OperationType)} {operation.Operand2} = {operation.Result}\n", ConsoleColor.Cyan);
+            if (operation.OperationType == OperationType.SquareRoot)
+            {
+                WriteColored($"{GetOperator(operation.OperationType)} {operation.Operand1} = {operation.Result}\n", color);
+            }
+            else
+            {
+                WriteColored($"{operation.Operand1} {GetOperator(operation.OperationType)} {operation.Operand2} = {operation.Result}\n", color);
+            }
         }
         catch (ArgumentException ex)
         {
             WriteColored($"{ex.Message}\n", ConsoleColor.Red);
-        }
+        }    
     }
     
     private static void DisplayTotalOperationsPerformed()
@@ -260,7 +275,7 @@ internal static class Program
         {
             Operation operation = history[i];
             
-            char op;
+            string op;
             try
             {
                 op = GetOperator(operation.OperationType);
@@ -271,7 +286,7 @@ internal static class Program
             }
 
             WriteColored($"{i + 1}. ", ConsoleColor.Cyan);
-            Console.Write($"{operation.Operand1} {op} {operation.Operand2} = {operation.Result}\n");
+            DisplayOperation(operation, ConsoleColor.White);
         }
         Console.WriteLine("\n--------------------------------------------------\n");
     }
