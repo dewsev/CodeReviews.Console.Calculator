@@ -17,18 +17,6 @@ public class Calculator
     {
         return _history.TotalOperationsPerformed;
     }
-
-    public Operation DoOperation(OperationType operationType, double operand)
-    {
-        double result = Math.Sqrt(operand);
-        
-        return new Operation
-        {
-            Operand1 = operand,
-            OperationType = operationType,
-            Result = result
-        };
-    }
     
     public Operation DoOperation(OperationType operationType, double operand1, double operand2)
     {
