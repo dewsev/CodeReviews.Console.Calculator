@@ -20,25 +20,7 @@ internal static class Program
         
         Console.Clear();
 
-        double operand1;
-        double operand2;
-        
-        if (operationType == OperationType.Power)
-        {
-            Console.Clear();
-            operand1 = operand ?? GetNumberFromUser("Base number: ");
-            
-            Console.Clear();
-            operand2 = (int)GetNumberFromUser("Power: ");    
-        }
-        else
-        {
-            Console.Clear();
-            operand1 = operand ?? GetNumberFromUser("First operand: ");
-            
-            Console.Clear();
-            operand2 = GetNumberFromUser("Second operand: ");
-        }
+        (double operand1, double operand2) = GetOperandsFromUser(operationType, operand);
 
         try
         {
@@ -169,6 +151,31 @@ internal static class Program
         Console.WriteLine("Press any key to go back to main menu.");
         Console.ReadKey();
         MainMenu();
+    }
+
+    private static (double, double) GetOperandsFromUser(OperationType operationType, double? operand = null)
+    {
+        double operand1;
+        double operand2;
+        
+        if (operationType == OperationType.Power)
+        {
+            Console.Clear();
+            operand1 = operand ?? GetNumberFromUser("Base number: ");
+            
+            Console.Clear();
+            operand2 = (int)GetNumberFromUser("Power: ");    
+        }
+        else
+        {
+            Console.Clear();
+            operand1 = operand ?? GetNumberFromUser("First operand: ");
+            
+            Console.Clear();
+            operand2 = GetNumberFromUser("Second operand: ");
+        }
+
+        return (operand1, operand2);
     }
     
     private static double GetNumberFromUser(string? prompt, double min = double.MinValue, double max = double.MaxValue)
