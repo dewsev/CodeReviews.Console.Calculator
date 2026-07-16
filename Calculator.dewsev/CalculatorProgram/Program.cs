@@ -19,10 +19,26 @@ internal static class Program
         OperationType operationType = GetOperationTypeFromUser();
         
         Console.Clear();
-        double operand1 = operand ?? GetNumberFromUser("Enter first operand: ");
+
+        double operand1;
+        double operand2;
         
-        Console.Clear();
-        double operand2 = GetNumberFromUser("Enter second operand: ");
+        if (operationType == OperationType.Power)
+        {
+            Console.Clear();
+            operand1 = operand ?? GetNumberFromUser("Base number: ");
+            
+            Console.Clear();
+            operand2 = (int)GetNumberFromUser("Power: ");    
+        }
+        else
+        {
+            Console.Clear();
+            operand1 = operand ?? GetNumberFromUser("First operand: ");
+            
+            Console.Clear();
+            operand2 = GetNumberFromUser("Second operand: ");
+        }
 
         try
         {
@@ -181,9 +197,10 @@ internal static class Program
         Console.WriteLine("\n1.Add");
         Console.WriteLine("2.Subtract");
         Console.WriteLine("3.Multiply");
-        Console.WriteLine("4.Divide\n");
+        Console.WriteLine("4.Divide");
+        Console.WriteLine("5.Power\n");
         
-        int choice = (int)GetNumberFromUser("Your choice: ", 1, 4);
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, 5);
 
         return choice switch
         {
@@ -191,6 +208,7 @@ internal static class Program
             2 => OperationType.Subtraction,
             3 => OperationType.Multiplication,
             4 => OperationType.Division,
+            5 => OperationType.Power,
             _ => throw new ArgumentException("Invalid input provided.")
         };
     }
@@ -203,6 +221,7 @@ internal static class Program
             OperationType.Subtraction => '-',
             OperationType.Multiplication => '*',
             OperationType.Division => '/',
+            OperationType.Power => '^',
             _ => throw new ArgumentException("Invalid operator.")
         };
     }

@@ -26,6 +26,7 @@ public class Calculator
             OperationType.Subtraction => operand1 - operand2,
             OperationType.Multiplication => operand1 * operand2,
             OperationType.Division => operand2 == 0 ? double.NaN : operand1 / operand2,
+            OperationType.Power => Math.Pow(operand1, operand2),
             _ => double.NaN
         };
 
