@@ -26,7 +26,7 @@ internal static class Program
         {
             Operation operation;
             
-            if (operationType is OperationType.SquareRoot or OperationType.Sin)
+            if (operationType is OperationType.SquareRoot or OperationType.Sin or OperationType.Tan)
             {
                 operation = Calculator.DoOperation(operationType, operand1);
             }
@@ -173,7 +173,7 @@ internal static class Program
             operand1 = operand ?? GetNumberFromUser("Radicand: ");
             operand2 = double.NaN;
         }
-        else if (operationType == OperationType.Sin)
+        else if (operationType is OperationType.Sin or OperationType.Tan)
         {
             operand1 = operand ?? GetNumberFromUser("Angle in degrees: ");
             operand2 = double.NaN;
@@ -227,9 +227,10 @@ internal static class Program
         Console.WriteLine("4.Divide");
         Console.WriteLine("5.Power");
         Console.WriteLine("6.Square root");
-        Console.WriteLine("7.Sin\n");
+        Console.WriteLine("7.Sin");
+        Console.WriteLine("8.Tan\n");
         
-        int choice = (int)GetNumberFromUser("Your choice: ", 1, 7);
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, 8);
 
         return choice switch
         {
@@ -240,6 +241,7 @@ internal static class Program
             5 => OperationType.Power,
             6 => OperationType.SquareRoot,
             7 => OperationType.Sin,
+            8 => OperationType.Tan,
             _ => throw new ArgumentException("Invalid input provided.")
         };
     }

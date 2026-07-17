@@ -8,5 +8,6 @@ public enum OperationType
     Division,
     Power,
     SquareRoot,
-    Sin
+    Sin,
+    Tan
 }

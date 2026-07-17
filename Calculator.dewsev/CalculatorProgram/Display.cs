@@ -14,9 +14,9 @@ internal static class Display
             {
                 ConsoleHelpers.WriteColored($"{GetOperator(operation.OperationType)} {operation.Operand1} = {operation.Result}\n", color);
             }
-            else if (operation.OperationType == OperationType.Sin)
+            else if (operation.OperationType is OperationType.Sin or OperationType.Tan)
             {
-                ConsoleHelpers.WriteColored($"sin({operation.Operand1}) = {operation.Result}\n", color);
+                ConsoleHelpers.WriteColored($"{GetOperator(operation.OperationType)}({operation.Operand1}) = {operation.Result}\n", color);
             }
             else
             {
@@ -58,6 +58,8 @@ internal static class Display
             OperationType.Division => "/",
             OperationType.Power => "^",
             OperationType.SquareRoot => "Square root of",
+            OperationType.Sin => "sin",
+            OperationType.Tan => "tan",
             _ => throw new ArgumentException("Invalid operator.")
         };
     }
