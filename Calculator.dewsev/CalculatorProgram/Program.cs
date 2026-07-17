@@ -26,7 +26,7 @@ internal static class Program
         {
             Operation operation;
             
-            if (operationType == OperationType.SquareRoot)
+            if (operationType is OperationType.SquareRoot or OperationType.Sin)
             {
                 operation = Calculator.DoOperation(operationType, operand1);
             }
@@ -173,6 +173,11 @@ internal static class Program
             operand1 = operand ?? GetNumberFromUser("Radicand: ");
             operand2 = double.NaN;
         }
+        else if (operationType == OperationType.Sin)
+        {
+            operand1 = operand ?? GetNumberFromUser("Angle in degrees: ");
+            operand2 = double.NaN;
+        }
         else if (operationType == OperationType.Power)
         {
             Console.Clear();
@@ -221,9 +226,10 @@ internal static class Program
         Console.WriteLine("3.Multiply");
         Console.WriteLine("4.Divide");
         Console.WriteLine("5.Power");
-        Console.WriteLine("6.Square root\n");
+        Console.WriteLine("6.Square root");
+        Console.WriteLine("7.Sin\n");
         
-        int choice = (int)GetNumberFromUser("Your choice: ", 1, 6);
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, 7);
 
         return choice switch
         {
@@ -233,6 +239,7 @@ internal static class Program
             4 => OperationType.Division,
             5 => OperationType.Power,
             6 => OperationType.SquareRoot,
+            7 => OperationType.Sin,
             _ => throw new ArgumentException("Invalid input provided.")
         };
     }
@@ -259,6 +266,10 @@ internal static class Program
             {
                 WriteColored($"{GetOperator(operation.OperationType)} {operation.Operand1} = {operation.Result}\n", color);
             }
+            else if (operation.OperationType == OperationType.Sin)
+            {
+                WriteColored($"sin({operation.Operand1}) = {operation.Result}\n", color);
+            }
             else
             {
                 WriteColored($"{operation.Operand1} {GetOperator(operation.OperationType)} {operation.Operand2} = {operation.Result}\n", color);
@@ -283,20 +294,8 @@ internal static class Program
         WriteColored("Lastest calculations:\n\n", ConsoleColor.Cyan);
         for (int i = 0; i < history.Count; i++)
         {
-            Operation operation = history[i];
-            
-            string op;
-            try
-            {
-                op = GetOperator(operation.OperationType);
-            }
-            catch (ArgumentException)
-            {
-                continue;
-            }
-
             WriteColored($"{i + 1}. ", ConsoleColor.Cyan);
-            DisplayOperation(operation, ConsoleColor.White);
+            DisplayOperation(history[i], ConsoleColor.White);
         }
         Console.WriteLine("\n--------------------------------------------------\n");
     }

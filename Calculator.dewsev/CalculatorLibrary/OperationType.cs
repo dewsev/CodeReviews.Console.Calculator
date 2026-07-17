@@ -7,5 +7,6 @@ public enum OperationType
     Multiplication,
     Division,
     Power,
-    SquareRoot
+    SquareRoot,
+    Sin
 }
