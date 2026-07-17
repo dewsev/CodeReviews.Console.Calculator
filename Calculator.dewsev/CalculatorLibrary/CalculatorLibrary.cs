@@ -18,6 +18,27 @@ public class Calculator
         return _history.TotalOperationsPerformed;
     }
     
+    public Operation DoOperation(OperationType operationType, double operand)
+    {
+        double result = operationType switch
+        {
+            OperationType.SquareRoot => Math.Sqrt(operand),
+            _ => throw new InvalidOperationException("This operation will result in a mathematical error.")
+        };   
+
+        Operation operation = new Operation
+        {
+            Operand1 = operand,
+            OperationType = operationType,
+            Result = result
+        };
+
+        _history.Update(operation);
+        JsonHelpers.SaveToJsonFile(_history, HistorySaveFileName);
+
+        return operation;
+    }
+    
     public Operation DoOperation(OperationType operationType, double operand1, double operand2)
     {
         double result = operationType switch
@@ -27,14 +48,8 @@ public class Calculator
             OperationType.Multiplication => operand1 * operand2,
             OperationType.Division => operand2 == 0 ? double.NaN : operand1 / operand2,
             OperationType.Power => Math.Pow(operand1, operand2),
-            OperationType.SquareRoot => Math.Sqrt(operand1),
-            _ => double.NaN
+            _ => throw new InvalidOperationException("This operation will result in a mathematical error.")
         };   
-         
-        if (double.IsNaN(result))
-        {
-            throw new InvalidOperationException("This operation will result in a mathematical error.");
-        }
 
         Operation operation = new Operation
         {

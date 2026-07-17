@@ -24,7 +24,17 @@ internal static class Program
 
         try
         {
-            Operation operation = Calculator.DoOperation(operationType, operand1, operand2);    
+            Operation operation;
+            
+            if (operationType == OperationType.SquareRoot)
+            {
+                operation = Calculator.DoOperation(operationType, operand1);
+            }
+            else
+            {
+                operation = Calculator.DoOperation(operationType, operand1, operand2);    
+            }
+                
             
             Console.Clear();
             DisplayOperation(operation, ConsoleColor.Cyan);
