@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 internal static class Program
 {
-    private static readonly Calculator Calculator = new Calculator();
+    private static readonly Calculator Calculator = new();
     
     private static void Main(string[] args)
     {
@@ -37,18 +37,18 @@ internal static class Program
                 
             
             Console.Clear();
-            DisplayOperation(operation, ConsoleColor.Cyan);
+            Display.ShowOperation(operation, ConsoleColor.Cyan);
             PostCalculationMenu();
         }
         catch (InvalidOperationException ex)
         {
             Console.Clear();
-            WriteColored($"{ex.Message}\n", ConsoleColor.Red);
+            ConsoleHelpers.WriteColored($"{ex.Message}\n", ConsoleColor.Red);
             PostCalculationMenu();
         }
         catch (Exception ex)
         {
-            WriteColored($"Oh no! An exception occurred trying to do the math.\n - Details: {ex.Message}\n", ConsoleColor.Red);
+            ConsoleHelpers.WriteColored($"Oh no! An exception occurred trying to do the math.\n - Details: {ex.Message}\n", ConsoleColor.Red);
         }
     }
     
@@ -118,8 +118,8 @@ internal static class Program
         }
         else
         {
-            DisplayTotalOperationsPerformed();
-            DisplayOperationList(operations);
+            Display.ShowTotalOperationsPerformed(Calculator);
+            Display.ShowOperationList(operations);
             
             Console.WriteLine("Provide corresponding index or press ENTER to go back to Main Menu.");
             Console.WriteLine("Input 'c' and press ENTER to clear the history data.\n");
@@ -146,8 +146,8 @@ internal static class Program
                         CalculatorMenu(chosenResult);
                     }
                     
-                    ClearCurrentConsoleLine();
-                    WriteColored("Invalid input. Please try again.\n", ConsoleColor.Red);
+                    ConsoleHelpers.ClearCurrentConsoleLine();
+                    ConsoleHelpers.WriteColored("Invalid input. Please try again.\n", ConsoleColor.Red);
                 }
             }
         }
@@ -157,7 +157,7 @@ internal static class Program
     {
         Calculator.ClearHistory();
         Console.Clear();
-        WriteColored("History cleared.\n", ConsoleColor.Green);
+        ConsoleHelpers.WriteColored("History cleared.\n", ConsoleColor.Green);
         Console.WriteLine("Press any key to go back to main menu.");
         Console.ReadKey();
         MainMenu();
@@ -211,7 +211,7 @@ internal static class Program
             
             input = Console.ReadLine();
             
-            ClearCurrentConsoleLine();
+            ConsoleHelpers.ClearCurrentConsoleLine();
 
         } while (!double.TryParse(input, out cleanNum) || cleanNum < min || cleanNum > max);
 
@@ -242,77 +242,6 @@ internal static class Program
             7 => OperationType.Sin,
             _ => throw new ArgumentException("Invalid input provided.")
         };
-    }
-    
-    private static string GetOperator(OperationType operationType)
-    {
-        return operationType switch
-        {
-            OperationType.Addition => "+",
-            OperationType.Subtraction => "-",
-            OperationType.Multiplication => "*",
-            OperationType.Division => "/",
-            OperationType.Power => "^",
-            OperationType.SquareRoot => "Square root of",
-            _ => throw new ArgumentException("Invalid operator.")
-        };
-    }
-    
-    private static void DisplayOperation(Operation operation, ConsoleColor color)
-    {
-        try
-        {
-            if (operation.OperationType == OperationType.SquareRoot)
-            {
-                WriteColored($"{GetOperator(operation.OperationType)} {operation.Operand1} = {operation.Result}\n", color);
-            }
-            else if (operation.OperationType == OperationType.Sin)
-            {
-                WriteColored($"sin({operation.Operand1}) = {operation.Result}\n", color);
-            }
-            else
-            {
-                WriteColored($"{operation.Operand1} {GetOperator(operation.OperationType)} {operation.Operand2} = {operation.Result}\n", color);
-            }
-        }
-        catch (ArgumentException ex)
-        {
-            WriteColored($"{ex.Message}\n", ConsoleColor.Red);
-        }    
-    }
-    
-    private static void DisplayTotalOperationsPerformed()
-    {
-        int totalOperationsPerformed = Calculator.GetTotalOperationsPerformed();
-        Console.WriteLine("--------------------------------------------------\n");
-        WriteColored($"Total operations performed: {totalOperationsPerformed}\n\n", ConsoleColor.Cyan);
-        Console.WriteLine("--------------------------------------------------\n");
-    }
-    
-    private static void DisplayOperationList(List<Operation> history)
-    {
-        WriteColored("Lastest calculations:\n\n", ConsoleColor.Cyan);
-        for (int i = 0; i < history.Count; i++)
-        {
-            WriteColored($"{i + 1}. ", ConsoleColor.Cyan);
-            DisplayOperation(history[i], ConsoleColor.White);
-        }
-        Console.WriteLine("\n--------------------------------------------------\n");
-    }
-    
-    private static void WriteColored(string text, ConsoleColor color)
-    {
-        Console.ForegroundColor = color;
-        Console.Write(text);
-        Console.ResetColor();
-    }
-    
-    private static void ClearCurrentConsoleLine()
-    {
-        int currentLineCursor = Console.CursorTop - 1;
-        Console.SetCursorPosition(0, currentLineCursor);
-        Console.Write(new string(' ', Console.WindowWidth)); 
-        Console.SetCursorPosition(0, currentLineCursor);
     }
 }
 
