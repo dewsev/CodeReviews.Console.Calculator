@@ -9,5 +9,6 @@ public enum OperationType
     Power,
     SquareRoot,
     Sin,
-    Tan
+    Tan,
+    Cos
 }

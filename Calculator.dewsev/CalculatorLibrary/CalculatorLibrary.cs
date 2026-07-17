@@ -25,6 +25,7 @@ public class Calculator
             OperationType.SquareRoot => Math.Sqrt(operand),
             OperationType.Sin => Math.Round(Math.Sin(double.DegreesToRadians(operand)), 4),
             OperationType.Tan => Math.Round(Math.Tan(double.DegreesToRadians(operand)), 4),
+            OperationType.Cos => Math.Round(Math.Cos(double.DegreesToRadians(operand)), 4),
             _ => throw new InvalidOperationException("This operation will result in a mathematical error.")
         };   
 
