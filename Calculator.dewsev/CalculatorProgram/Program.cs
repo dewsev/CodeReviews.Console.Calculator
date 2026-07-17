@@ -221,31 +221,21 @@ internal static class Program
     private static OperationType GetOperationTypeFromUser()
     {
         Console.WriteLine("Choose an operation:");
-        Console.WriteLine("\n1.Add");
-        Console.WriteLine("2.Subtract");
-        Console.WriteLine("3.Multiply");
-        Console.WriteLine("4.Divide");
-        Console.WriteLine("5.Power");
-        Console.WriteLine("6.Square root");
-        Console.WriteLine("7.Sin");
-        Console.WriteLine("8.Tan");
-        Console.WriteLine("9.Cos\n");
-        
-        int choice = (int)GetNumberFromUser("Your choice: ", 1, 9);
 
-        return choice switch
+        string[] operationTypeNames = Enum.GetNames<OperationType>();
+        
+        Console.WriteLine();
+        for (int i = 0; i < operationTypeNames.Length; i++)
         {
-            1 => OperationType.Addition,
-            2 => OperationType.Subtraction,
-            3 => OperationType.Multiplication,
-            4 => OperationType.Division,
-            5 => OperationType.Power,
-            6 => OperationType.SquareRoot,
-            7 => OperationType.Sin,
-            8 => OperationType.Tan,
-            9 => OperationType.Cos,
-            _ => throw new ArgumentException("Invalid input provided.")
-        };
+            string name = operationTypeNames[i];
+
+            Console.Write($"{i + 1}.");
+            Console.WriteLine(name == "SquareRoot" ? "Square root" : name);
+        }
+        Console.WriteLine();
+
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, operationTypeNames.Length) - 1;
+        return (OperationType)choice;
     }
 }
 
