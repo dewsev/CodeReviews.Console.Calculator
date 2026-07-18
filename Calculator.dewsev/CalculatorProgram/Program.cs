@@ -234,21 +234,25 @@ internal static class Program
             string name = operationTypeNames[i];
 
             Console.Write($"{i + 1}.");
-            if (name == "SquareRoot")
-            {
-                name = "Square Root";
-            }
-            else if (name == "TenToPower")
-            {
-                name = "Ten to power";
-            }
-
-            Console.WriteLine(name);
+            Console.WriteLine(FormatOperationName(name));
         }
         Console.WriteLine();
 
         int choice = (int)GetNumberFromUser("Your choice: ", 1, operationTypeNames.Length) - 1;
         return (OperationType)choice;
+    }
+
+    private static string FormatOperationName(string name)
+    {
+        string newName = name[0].ToString();
+
+        for (int i = 1; i < name.Length; i++)
+        {
+            string letter = name[i].ToString();
+            newName += letter == letter.ToUpper() ? $" {letter.ToLower()}" : letter; 
+        }
+
+        return newName;
     }
 }
 
