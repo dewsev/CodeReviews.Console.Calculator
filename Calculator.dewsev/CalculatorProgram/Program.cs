@@ -34,7 +34,6 @@ internal static class Program
             {
                 operation = Calculator.DoOperation(operationType, operand1, operand2);    
             }
-                
             
             Console.Clear();
             Display.ShowOperation(operation, ConsoleColor.Cyan);
@@ -178,13 +177,18 @@ internal static class Program
             operand1 = operand ?? GetNumberFromUser("Angle in degrees: ");
             operand2 = double.NaN;
         }
+        else if (operationType == OperationType.TenToPower)
+        {
+            operand1 = 10;
+            operand2 = (int)GetNumberFromUser("Power: ");
+        }
         else if (operationType == OperationType.Power)
         {
             Console.Clear();
             operand1 = operand ?? GetNumberFromUser("Base number: ");
             
             Console.Clear();
-            operand2 = (int)GetNumberFromUser("Power: ");    
+            operand2 = (int)GetNumberFromUser("Power: ");
         }
         else
         {

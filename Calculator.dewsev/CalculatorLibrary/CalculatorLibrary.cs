@@ -51,6 +51,7 @@ public class Calculator
             OperationType.Multiplication => operand1 * operand2,
             OperationType.Division => operand2 == 0 ? double.NaN : operand1 / operand2,
             OperationType.Power => Math.Pow(operand1, operand2),
+            OperationType.TenToPower => Math.Pow(operand1, operand2),
             _ => throw new InvalidOperationException("This operation will result in a mathematical error.")
         };   
 

@@ -12,7 +12,7 @@ internal static class Display
         {
             if (operation.OperationType == OperationType.SquareRoot)
             {
-                ConsoleHelpers.WriteColored($"{GetOperator(operation.OperationType)} {operation.Operand1} = {operation.Result}\n", color);
+                ConsoleHelpers.WriteColored($"{GetOperator(operation.OperationType)}{operation.Operand1} = {operation.Result}\n", color);
             }
             else if (operation.OperationType is OperationType.Sin or OperationType.Tan or OperationType.Cos)
             {
@@ -57,10 +57,11 @@ internal static class Display
             OperationType.Multiplication => "*",
             OperationType.Division => "/",
             OperationType.Power => "^",
-            OperationType.SquareRoot => "Square root of",
+            OperationType.SquareRoot => "√",
             OperationType.Sin => "sin",
             OperationType.Tan => "tan",
             OperationType.Cos => "cos",
+            OperationType.TenToPower => "^",
             _ => throw new ArgumentException("Invalid operator.")
         };
     }
