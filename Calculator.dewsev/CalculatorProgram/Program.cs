@@ -234,7 +234,16 @@ internal static class Program
             string name = operationTypeNames[i];
 
             Console.Write($"{i + 1}.");
-            Console.WriteLine(name == "SquareRoot" ? "Square root" : name);
+            if (name == "SquareRoot")
+            {
+                name = "Square Root";
+            }
+            else if (name == "TenToPower")
+            {
+                name = "Ten to power";
+            }
+
+            Console.WriteLine(name);
         }
         Console.WriteLine();
 
