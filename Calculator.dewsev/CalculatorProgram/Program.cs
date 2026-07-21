@@ -24,30 +24,34 @@ internal static class Program
 
         try
         {
+            Console.Clear();
             Operation operation;
-            
-            if (operationType is OperationType.SquareRoot or OperationType.Sin or OperationType.Tan or OperationType.Cos)
+
+            if (operationType is OperationType.SquareRoot or OperationType.Sin or OperationType.Tan
+                or OperationType.Cos)
             {
                 operation = Calculator.DoOperation(operationType, operand1);
             }
             else
             {
-                operation = Calculator.DoOperation(operationType, operand1, operand2);    
+                operation = Calculator.DoOperation(operationType, operand1, operand2);
             }
-            
-            Console.Clear();
+
             Display.ShowOperation(operation, ConsoleColor.Cyan);
-            PostCalculationMenu();
         }
         catch (InvalidOperationException ex)
         {
-            Console.Clear();
             ConsoleHelpers.WriteColored($"{ex.Message}\n", ConsoleColor.Red);
-            PostCalculationMenu();
+
         }
         catch (Exception ex)
         {
-            ConsoleHelpers.WriteColored($"Oh no! An exception occurred trying to do the math.\n - Details: {ex.Message}\n", ConsoleColor.Red);
+            ConsoleHelpers.WriteColored(
+                $"Oh no! An exception occurred trying to do the math.\n - Details: {ex.Message}\n", ConsoleColor.Red);
+        }
+        finally
+        {
+            PostCalculationMenu();
         }
     }
     
