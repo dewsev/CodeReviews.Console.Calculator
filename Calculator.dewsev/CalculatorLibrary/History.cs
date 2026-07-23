@@ -1,28 +1,56 @@
+using Newtonsoft.Json;
+
 namespace CalculatorLibrary;
 
 using System.Collections.Generic;
 
 internal class History
 {
-    private const int HistorySize = 6;
-    public int TotalOperationsPerformed { get; set; }
-    public List<Operation> LatestOperations { get; } = [];
+    internal const int DefaultSize = 6;
+    
+    [JsonProperty]
+    internal int Size { get; private set; } = DefaultSize;
+    [JsonProperty]
+    internal int TotalOperationsPerformed { get; private set; }
+    [JsonProperty]
+    internal List<Operation> LatestOperations { get; } = [];
     
     internal void Update(Operation operation)
     {
+        if (Size == 0)
+        {
+            return;
+        }
+        
         TotalOperationsPerformed++;
         
         LatestOperations.Insert(0, operation);
         
-        if (LatestOperations.Count > HistorySize)
+        if (LatestOperations.Count > Size)
         {
-            LatestOperations.RemoveAt(HistorySize);
+            LatestOperations.RemoveAt(Size);
         }
     }
+    
+    internal void SetSize(int newSize)
+    {
+        Size = newSize;
+    }
 
-    public void Clear()
+    internal void ClearOperationHistory()
+    {
+        LatestOperations.Clear();
+    }
+    
+    internal void ResetTotalOperationsPerformed()
     {
         TotalOperationsPerformed = 0;
-        LatestOperations.Clear();
+
+    }
+    
+    internal void ClearAllData()
+    {
+        ResetTotalOperationsPerformed();
+        ClearOperationHistory();
     }
 }

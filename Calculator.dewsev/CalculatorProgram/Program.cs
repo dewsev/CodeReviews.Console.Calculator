@@ -26,6 +26,9 @@ internal static class Program
                 case MenuState.History:
                     state = HistoryMenu(out carryOperand);
                     break;
+                case MenuState.Settings:
+                    state = SettingsMenu();
+                    break;
             }
         }
     }
@@ -95,16 +98,18 @@ internal static class Program
         Console.WriteLine("Console Calculator in C#");
         Console.WriteLine("------------------------");
         Console.WriteLine("\n1.Calculator");
-        Console.WriteLine("2.History");
-        Console.WriteLine("3.Exit\n");
+        Console.WriteLine($"2.History (Size: {Calculator.GetHistorySize()})");
+        Console.WriteLine($"3.Settings");
+        Console.WriteLine("4.Exit\n");
 
-        int choice = (int)GetNumberFromUser("Your choice: ", 1, 3);
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, 4);
 
         return choice switch
         {
             1 => MenuState.Calculator,
             2 => MenuState.History,
-            3 => MenuState.Exit,
+            3 => MenuState.Settings,
+            4 => MenuState.Exit,
             _ => MenuState.Main
         };
     }
@@ -118,17 +123,15 @@ internal static class Program
 
         if (operations.Count == 0)
         {
-            Console.WriteLine("You have not performed any calculations yet.\n");
-            Console.WriteLine("Press any key to go to Main Menu.");
-            Console.ReadKey();
-            return MenuState.Main;
+            Console.WriteLine("Your operation history is empty.\n");
         }
-
-        Display.ShowTotalOperationsPerformed(Calculator);
-        Display.ShowOperationList(operations);
+        else
+        {
+            Display.ShowTotalOperationsPerformed(Calculator);
+            Display.ShowOperationList(operations);
+        }
         
         Console.WriteLine("Provide corresponding index or press ENTER to go back to Main Menu.");
-        Console.WriteLine("Input 'c' and press ENTER to clear the history data.\n");
 
         while (true)
         {
@@ -140,33 +143,80 @@ internal static class Program
                 return MenuState.Main;
             }
             
-            if (input == "c")
+            bool validChoice = int.TryParse(input, out int choice) && choice > 0 && choice <= operations.Count;
+            if (validChoice)
             {
-                ClearHistory();
-                return MenuState.Main;
+                selectedOperand = operations[choice - 1].Result;
+                return MenuState.Calculator;
             }
-            else
-            {
-                bool validChoice = int.TryParse(input, out int choice) && choice > 0 && choice <= operations.Count;
-                if (validChoice)
-                {
-                    selectedOperand = operations[choice - 1].Result;
-                    return MenuState.Calculator;
-                }
-                
-                ConsoleHelpers.ClearCurrentConsoleLine();
-                ConsoleHelpers.WriteColored("Invalid input. Please try again.\n", ConsoleColor.Red);
-            }
+            
+            ConsoleHelpers.ClearCurrentConsoleLine();
+            ConsoleHelpers.WriteColored("Invalid input. Please try again.\n", ConsoleColor.Red);
         }
-        
+    }
+
+    private static MenuState SettingsMenu()
+    {
+        Console.Clear();
+        Console.WriteLine("History Settings");
+        Console.WriteLine("------------------------");
+        Console.WriteLine("\n1.Clear all data");
+        Console.WriteLine("2.Clear operation history");
+        Console.WriteLine("3.Reset total operations performed");
+        Console.WriteLine($"4.Change history size (Current: {Calculator.GetHistorySize()}, Default: {Calculator.DefaultHistorySize})");
+        Console.WriteLine("5.Main Menu\n");
+
+        int choice = (int)GetNumberFromUser("Your choice: ", 1, 5);
+
+        switch (choice)
+        {
+            case 1:
+                ClearAllData();
+                break;
+            case 2:
+                ClearOperationHistory();
+                break;
+            case 3:
+                ResetTotalOperationsPerformed();
+                break;
+            case 4:
+                ChangeHistorySize();
+                break;
+        }
+
+        return MenuState.Main;
+    }
+
+    private static void ChangeHistorySize()
+    {
+        int newSize = (int)GetNumberFromUser("Enter new history size: ", 0);
+        Calculator.SetHistorySize(newSize);
     }
     
-    private static void ClearHistory()
+    private static void ResetTotalOperationsPerformed()
     {
-        Calculator.ClearHistory();
+        Calculator.ResetTotalOperationsPerformed();
         Console.Clear();
-        ConsoleHelpers.WriteColored("History cleared.\n", ConsoleColor.Green);
-        Console.WriteLine("Press any key to go back to main menu.");
+        ConsoleHelpers.WriteColored("Total operations performed reset.\n", ConsoleColor.Green);
+        Console.WriteLine("Press any key to go back to Main Menu.");
+        Console.ReadKey();
+    }
+    
+    private static void ClearOperationHistory()
+    {
+        Calculator.ClearOperationHistory();
+        Console.Clear();
+        ConsoleHelpers.WriteColored("Operation history cleared.\n", ConsoleColor.Green);
+        Console.WriteLine("Press any key to go back to Main Menu.");
+        Console.ReadKey();
+    }
+    
+    private static void ClearAllData()
+    {
+        Calculator.ClearAllData();
+        Console.Clear();
+        ConsoleHelpers.WriteColored("Data cleared.\n", ConsoleColor.Green);
+        Console.WriteLine("Press any key to go back to Main Menu.");
         Console.ReadKey();
     }
 

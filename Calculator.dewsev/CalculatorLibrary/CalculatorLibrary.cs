@@ -5,18 +5,10 @@ using System.Collections.Generic;
 
 public class Calculator
 {
+    public const int DefaultHistorySize = History.DefaultSize;
+    
     private const string HistorySaveFileName = "history.json";
     private readonly History _history = JsonHelpers.ReadFromJsonFile<History>(HistorySaveFileName);
-
-    public List<Operation> GetOperationHistory()
-    {
-        return _history.LatestOperations;
-    }
-    
-    public int GetTotalOperationsPerformed()
-    {
-        return _history.TotalOperationsPerformed;
-    }
     
     public Operation DoOperation(OperationType operationType, double operand)
     {
@@ -37,7 +29,11 @@ public class Calculator
         };
 
         _history.Update(operation);
-        JsonHelpers.SaveToJsonFile(_history, HistorySaveFileName);
+
+        if (_history.Size > 0)
+        {
+            JsonHelpers.SaveToJsonFile(_history, HistorySaveFileName);    
+        }
 
         return operation;
     }
@@ -68,10 +64,43 @@ public class Calculator
 
         return operation;
     }
-
-    public void ClearHistory()
+    
+    public List<Operation> GetOperationHistory()
     {
-        _history.Clear();
+        return _history.LatestOperations;
+    }
+    
+    public int GetTotalOperationsPerformed()
+    {
+        return _history.TotalOperationsPerformed;
+    }
+    
+    public int GetHistorySize()
+    {
+        return _history.Size;
+    }
+    
+    public void SetHistorySize(int newSize)
+    {
+        _history.SetSize(newSize);
+        JsonHelpers.SaveToJsonFile(_history, HistorySaveFileName);
+    }
+    
+    public void ClearAllData()
+    {
+        _history.ClearAllData();
+        JsonHelpers.SaveToJsonFile(_history, HistorySaveFileName);
+    }
+    
+    public void ClearOperationHistory()
+    {
+        _history.ClearOperationHistory();
+        JsonHelpers.SaveToJsonFile(_history, HistorySaveFileName);
+    } 
+    
+    public void ResetTotalOperationsPerformed()
+    {
+        _history.ResetTotalOperationsPerformed();
         JsonHelpers.SaveToJsonFile(_history, HistorySaveFileName);
     }
 }
