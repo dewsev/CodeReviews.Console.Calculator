@@ -11,9 +11,7 @@ internal static class JsonHelpers
         string json = JsonConvert.SerializeObject(obj);
 
         using StreamWriter file = File.CreateText(fileName);
-        using JsonTextWriter writer = new JsonTextWriter(file);
-        
-        writer.WriteRaw(json);
+        File.WriteAllText(fileName, json);
     }
     
     public static T ReadFromJsonFile<T>(string fileName) where T : new()
