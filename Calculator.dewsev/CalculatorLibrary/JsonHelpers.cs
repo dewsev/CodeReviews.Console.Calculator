@@ -8,10 +8,7 @@ internal static class JsonHelpers
 {
     public static void SaveToJsonFile(object obj, string fileName)
     {
-        string json = JsonConvert.SerializeObject(obj);
-
-        using StreamWriter file = File.CreateText(fileName);
-        File.WriteAllText(fileName, json);
+        File.WriteAllText(fileName, JsonConvert.SerializeObject(obj));
     }
     
     public static T ReadFromJsonFile<T>(string fileName) where T : new()
